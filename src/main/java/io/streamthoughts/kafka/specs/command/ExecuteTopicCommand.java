@@ -62,15 +62,18 @@ public class ExecuteTopicCommand implements ClusterCommand<Collection<OperationR
     }
 
     private final AdminClient client;
+    private final String namespace;
 
     private KafkaSpecsRunnerOptions options;
 
     /**
      * Creates a new {@link ExecuteTopicCommand} instance.
      * @param client
+     * @param namespace
      */
-    public ExecuteTopicCommand(final AdminClient client) {
+    public ExecuteTopicCommand(final AdminClient client, String namespace) {
         this.client = client;
+        this.namespace = namespace;
     }
 
     /**
@@ -148,7 +151,7 @@ public class ExecuteTopicCommand implements ClusterCommand<Collection<OperationR
         }
         return new AlterTopicOperation()
                 .execute(client, new ResourcesIterable<>(topics), new ResourceOperationOptions() {
-                });
+                }, namespace);
     }
 
     private Collection<OperationResult<TopicResource>> executeCreateTopics(final Collection<TopicResource> topics) {
@@ -157,7 +160,7 @@ public class ExecuteTopicCommand implements ClusterCommand<Collection<OperationR
         }
 
         return new CreateTopicOperation()
-                .execute(client, new ResourcesIterable<>(topics), new CreateTopicOperationOptions());
+                .execute(client, new ResourcesIterable<>(topics), new CreateTopicOperationOptions(), namespace);
     }
 
     private Collection<OperationResult<TopicResource>> executeDeleteTopics(final Collection<TopicResource> topics) {
@@ -166,7 +169,7 @@ public class ExecuteTopicCommand implements ClusterCommand<Collection<OperationR
         }
 
         return new DeleteTopicOperation()
-                .execute(client, new ResourcesIterable<>(topics), new ResourceOperationOptions() {});
+                .execute(client, new ResourcesIterable<>(topics), new ResourceOperationOptions() {}, namespace);
     }
 
     private List<OperationResult<TopicResource>> buildDryRunResult(final Collection<TopicResource> resources,
@@ -185,6 +188,6 @@ public class ExecuteTopicCommand implements ClusterCommand<Collection<OperationR
         List<TopicResource> topics = topicNames.stream().map(TopicResource::new).collect(Collectors.toList());
 
         return new DescribeTopicOperation()
-                .execute(client,  new ResourcesIterable<>(topics), DescribeOperationOptions.withDescribeDefaultConfigs(true));
+                .execute(client,  new ResourcesIterable<>(topics), DescribeOperationOptions.withDescribeDefaultConfigs(true), namespace);
     }
 }

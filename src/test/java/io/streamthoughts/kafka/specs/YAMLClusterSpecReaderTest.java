@@ -143,6 +143,8 @@ public class YAMLClusterSpecReaderTest {
         assertTrue(topics.contains(TOPIC_P1));
         assertTrue(topics.contains(TOPIC_P2));
         assertTrue(topics.contains(TOPIC_P3));
+
+
     }
 
 

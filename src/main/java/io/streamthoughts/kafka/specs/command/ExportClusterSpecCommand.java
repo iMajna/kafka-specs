@@ -80,14 +80,14 @@ public class ExportClusterSpecCommand implements ClusterCommand<Void> {
                     new DescribeTopicOperation().execute(
                         client,
                         it,
-                        DescribeOperationOptions.withDescribeDefaultConfigs(options.isDefaultConfigs())
+                        DescribeOperationOptions.withDescribeDefaultConfigs(options.isDefaultConfigs()),""
                     )
                 );
             }
 
             final LinkedList<AclUserPolicy> policies = new LinkedList<>();
             if (options.entityTypes().contains(EntityType.ACLS) || options.entityTypes().isEmpty()) {
-                Collection<AclRule> rules = new DescribeAclsOperation().execute(client, null, new ResourceOperationOptions() {});
+                Collection<AclRule> rules = new DescribeAclsOperation().execute(client, null, new ResourceOperationOptions() {}, "");
                 policies.addAll(aclRulesBuilder.toAclUserPolicy(rules));
             }
 

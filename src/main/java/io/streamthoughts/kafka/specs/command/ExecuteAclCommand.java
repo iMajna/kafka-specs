@@ -109,7 +109,7 @@ public class ExecuteAclCommand implements ClusterCommand<Collection<OperationRes
         }
 
         return new CreateAclsOperation()
-                .execute(client, new ResourcesIterable<>(rules), new ResourceOperationOptions() {});
+                .execute(client, new ResourcesIterable<>(rules), new ResourceOperationOptions() {}, "");
     }
 
     private List<OperationResult<AclRule>> buildDryRunResult(final Collection<AclRule> resources,

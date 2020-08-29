@@ -39,5 +39,5 @@ public interface ClusterOperation<T extends ClusterResource, C extends ResourceO
      *
      * @return
      */
-    O execute(AdminClient client, T resource, C options);
+    O execute(AdminClient client, T resource, C options, String namespace);
 }

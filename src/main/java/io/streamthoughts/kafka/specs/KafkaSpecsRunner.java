@@ -28,8 +28,13 @@ import io.streamthoughts.kafka.specs.command.ExportClusterSpecCommand;
 import io.streamthoughts.kafka.specs.internal.AdminClientUtils;
 import org.apache.kafka.clients.admin.AdminClient;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * The command line main class.
@@ -39,6 +44,12 @@ public class KafkaSpecsRunner {
     public static void main(String[] args) {
 
         final KafkaSpecsRunnerOptions options = new KafkaSpecsRunnerOptions(args);
+        String[] clusterPath =  Stream.of(args).filter(str -> str.endsWith("yaml"))
+                                .collect(Collectors.toSet()).toArray(new String[0]);
+        String[] splitPath = clusterPath[0].split("/");
+        String[] namespaceSpliter = splitPath[splitPath.length-1].split(".yaml");
+        String namespace = namespaceSpliter[namespaceSpliter.length-1];
+
 
         if(args.length == 0) {
             CLIUtils.printUsageAndDie(options.parser, "Create, Alter, Delete or Describe Kafka cluster resources");
@@ -61,7 +72,7 @@ public class KafkaSpecsRunner {
                 Collection<OperationResult> results = new LinkedList<>();
 
                 if (options.entityTypes().contains(EntityType.TOPICS)) {
-                    ExecuteTopicCommand command = new ExecuteTopicCommand(client);
+                    ExecuteTopicCommand command = new ExecuteTopicCommand(client, namespace);
                     results.addAll(command.execute(options));
                 }
 

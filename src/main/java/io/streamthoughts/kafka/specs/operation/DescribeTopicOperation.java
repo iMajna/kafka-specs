@@ -56,7 +56,8 @@ public class DescribeTopicOperation implements ClusterOperation<ResourcesIterabl
     @Override
     public Collection<TopicResource> execute(final AdminClient client,
                                              final ResourcesIterable<TopicResource> resources,
-                                             final DescribeOperationOptions options) {
+                                             final DescribeOperationOptions options,
+                                             String namespace) {
 
         this.options = options;
         this.client = client;

@@ -1,0 +1,7 @@
+topics:
+  - name: bench-1000-p3-r1
+    partitions: 3
+    replication_factor: 1
+    configs:
+      min.insync.replicas: '1'
+

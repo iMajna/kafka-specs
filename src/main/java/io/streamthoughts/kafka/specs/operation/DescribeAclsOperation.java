@@ -45,7 +45,8 @@ public class DescribeAclsOperation implements ClusterOperation<ResourcesIterable
     @Override
     public Collection<AclRule> execute(final AdminClient client,
                                        final ResourcesIterable<AclRule> resource,
-                                       final ResourceOperationOptions options) {
+                                       final ResourceOperationOptions options,
+                                       String namespace) {
         return executeAsync(client, resource, options).join();
     }
 

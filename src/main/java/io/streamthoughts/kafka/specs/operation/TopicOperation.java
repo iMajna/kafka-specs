@@ -39,9 +39,10 @@ public abstract class TopicOperation<T extends ResourceOperationOptions> extends
     @Override
     public Collection<OperationResult<TopicResource>> execute(final AdminClient client,
                                                               final ResourcesIterable<TopicResource> resources,
-                                                              final T options) {
+                                                              final T options,
+                                                              String namespace) {
 
-        final Map<String, KafkaFuture<Void>> values = doExecute(client, resources, options);
+        final Map<String, KafkaFuture<Void>> values = doExecute(client, resources, options, namespace);
 
         final Map<String, TopicResource> topicKeyedByName = Named.keyByName(resources.originalCollections());
         List<CompletableFuture<OperationResult<TopicResource>>> completableFutures = values.entrySet()
@@ -60,6 +61,7 @@ public abstract class TopicOperation<T extends ResourceOperationOptions> extends
 
     protected abstract Map<String, KafkaFuture<Void>> doExecute(final AdminClient client,
                                                                 final ResourcesIterable<TopicResource> resource,
-                                                                final ResourceOperationOptions options);
+                                                                final ResourceOperationOptions options,
+                                                                String namespace);
 
 }

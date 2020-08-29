@@ -25,6 +25,7 @@ import io.streamthoughts.kafka.specs.resources.TopicResource;
 import io.streamthoughts.kafka.specs.internal.ConfigsBuilder;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.AlterConfigsResult;
+import org.apache.kafka.clients.admin.NewPartitions;
 import org.apache.kafka.common.KafkaFuture;
 import org.apache.kafka.common.config.ConfigResource;
 import org.slf4j.Logger;
@@ -60,7 +61,8 @@ public class AlterTopicOperation extends TopicOperation<ResourceOperationOptions
     @Override
     protected Map<String, KafkaFuture<Void>> doExecute(final AdminClient client,
                                                        final ResourcesIterable<TopicResource> resources,
-                                                       final ResourceOperationOptions options) {
+                                                       final ResourceOperationOptions options,
+                                                       String namespace) {
         final ConfigsBuilder builder = new ConfigsBuilder();
 
         final List<String> topicsNames = new ArrayList<>();
@@ -79,5 +81,11 @@ public class AlterTopicOperation extends TopicOperation<ResourceOperationOptions
         final Map<String, KafkaFuture<Void>> futures = new HashMap<>();
         result.values().forEach( (k, v) -> futures.put(k.name(), v));
         return futures;
+    }
+
+    public static void updateTopicPartitions (final AdminClient client, final TopicResource t){
+        Map<String, NewPartitions> newPartitionsMap = new HashMap<>();
+        newPartitionsMap.put(t.name(), NewPartitions.increaseTo(t.partitions()));
+        client.createPartitions(newPartitionsMap);
     }
 }

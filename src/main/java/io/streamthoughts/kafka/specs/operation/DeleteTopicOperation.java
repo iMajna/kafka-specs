@@ -24,12 +24,15 @@ import io.streamthoughts.kafka.specs.resources.ResourcesIterable;
 import io.streamthoughts.kafka.specs.resources.TopicResource;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.DeleteTopicsResult;
+import org.apache.kafka.clients.admin.ListTopicsOptions;
 import org.apache.kafka.common.KafkaFuture;
+import org.apache.kafka.common.protocol.types.Field;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -58,15 +61,22 @@ public class DeleteTopicOperation extends TopicOperation<ResourceOperationOption
     @Override
     protected Map<String, KafkaFuture<Void>> doExecute(final AdminClient client,
                                                        final ResourcesIterable<TopicResource> resources,
-                                                       final ResourceOperationOptions options) {
+                                                       final ResourceOperationOptions options,
+                                                       String namespace
+                                                       ) {
         List<String> topics = StreamSupport.stream(resources.spliterator(), false)
                 .map(TopicResource::name)
                 .collect(Collectors.toList());
+        Pattern namespacePattern = Pattern.compile(namespace);
 
-        LOG.info("Deleting topics : {}", topics);
+        List<String> matchingTopicsPerNamespace = topics.stream()
+                                                    .filter(namespacePattern.asPredicate())
+                                                    .collect(Collectors.toList());
 
-        DeleteTopicsResult result = client.deleteTopics(topics);
+        LOG.info("Deleting topics : {}", matchingTopicsPerNamespace);
+        DeleteTopicsResult result = client.deleteTopics(matchingTopicsPerNamespace);
 
         return result.values();
     }
+
 }

@@ -65,7 +65,8 @@ public class CreateAclsOperation extends AbstractOperation<AclRule, ResourceOper
     @Override
     public Collection<OperationResult<AclRule>> execute(final AdminClient client,
                                                         final ResourcesIterable<AclRule> rules,
-                                                        final ResourceOperationOptions options) {
+                                                        final ResourceOperationOptions options,
+                                                        String namespace) {
 
         Collection<CompletableFuture<OperationResult<AclRule>>> futures =  new LinkedList<>();
 

@@ -23,14 +23,12 @@ import io.streamthoughts.kafka.specs.internal.DescriptionProvider;
 import io.streamthoughts.kafka.specs.resources.Configs;
 import io.streamthoughts.kafka.specs.resources.ResourcesIterable;
 import io.streamthoughts.kafka.specs.resources.TopicResource;
-import org.apache.kafka.clients.admin.AdminClient;
-import org.apache.kafka.clients.admin.CreateTopicsOptions;
-import org.apache.kafka.clients.admin.CreateTopicsResult;
-import org.apache.kafka.clients.admin.NewTopic;
+import org.apache.kafka.clients.admin.*;
 import org.apache.kafka.common.KafkaFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -63,7 +61,8 @@ public class CreateTopicOperation extends TopicOperation<CreateTopicOperationOpt
     @Override
     protected Map<String, KafkaFuture<Void>> doExecute(final AdminClient client,
                                                        final ResourcesIterable<TopicResource> resources,
-                                                       final ResourceOperationOptions options) {
+                                                       final ResourceOperationOptions options,
+                                                       String namespace) {
         List<NewTopic> topics = StreamSupport.stream(resources.spliterator(), false)
                 .map(this::toNewTopic)
                 .collect(Collectors.toList());
@@ -78,5 +77,7 @@ public class CreateTopicOperation extends TopicOperation<CreateTopicOperationOpt
         return new NewTopic(t.name(), t.partitions(), t.replicationFactor())
                 .configs(resourceConfig);
     }
+
+  //  private NewTopic
 
 }

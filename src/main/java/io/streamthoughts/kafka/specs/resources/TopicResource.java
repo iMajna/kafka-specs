@@ -18,6 +18,7 @@
  */
 package io.streamthoughts.kafka.specs.resources;
 
+import io.streamthoughts.kafka.specs.operation.CreateTopicOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -123,6 +124,10 @@ public class TopicResource implements ClusterResource,  Named, Serializable {
             throw new IllegalArgumentException(
                     "Can't check changes on resources with different names " + this.name + "<>" + resource.name);
         }
+
+      //  if (this.partitions >= resource.partitions){
+        //CreateTopicOperation.createPartitions(resource, ad);
+       // }
 
         if (this.partitions != resource.partitions ||
             this.replicationFactor != resource.replicationFactor) {
